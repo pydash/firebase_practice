@@ -74,21 +74,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   search_button.addEventListener("click", function () {
     var search = search_input.value;
-    get(child(ref(db), `items/${search}`))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          var data = snapshot.val();
-          items_list.innerHTML = "";
-          for (var id in data) {
-            items_list.innerHTML += `<li>${data[id].name} - ${data[id].brand} - ${data[id].description} - ${data[id].date} <button class="delete-button" data-category="${search}" data-id="${id}">Retrieve</button></li>`;
+    if (search === "") {
+      alert("Enter an item to search");
+      return;
+    } else {
+      get(child(ref(db), `items/${search}`))
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            var data = snapshot.val();
+            items_list.innerHTML = "";
+            for (var id in data) {
+              items_list.innerHTML += `<li>${data[id].name} - ${data[id].brand} - ${data[id].description} - ${data[id].date} <button class="delete-button" data-category="${search}" data-id="${id}">Retrieve</button></li>`;
+            }
+          } else {
+            items_list.innerHTML = "No item found";
           }
-        } else {
-          items_list.innerHTML = "No item found";
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   });
 
   items_list.addEventListener("click", function (e) {
